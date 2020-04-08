@@ -2,7 +2,10 @@ package be.tomcools.dropwizard.websocket.handling;
 
 import be.tomcools.dropwizard.websocket.WebsocketConfiguration;
 import io.dropwizard.jetty.MutableServletContextHandler;
+import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.ContextHandler;
+import org.eclipse.jetty.websocket.jsr356.server.deploy.WebSocketServerContainerInitializer;
 import org.eclipse.jetty.websocket.server.WebSocketUpgradeFilter;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,7 +17,9 @@ import org.mockito.runners.MockitoJUnitRunner;
 import javax.servlet.ServletException;
 
 import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class WebsocketContainerInitializerTest {
@@ -37,6 +42,10 @@ public class WebsocketContainerInitializerTest {
 
     @Test
     public void canConstructServerContainerForServletHandlerContext() {
+        ContextHandler.Context servletContext = mock(ContextHandler.Context.class);
+        when(servletContextHandler.getServletContext()).thenReturn(servletContext);
+        HttpClient httpClient = mock(HttpClient.class);
+        when(servletContextHandler.getAttribute(WebSocketServerContainerInitializer.HTTPCLIENT_ATTRIBUTE)).thenReturn(httpClient);
         WebsocketContainer container = sut.initialize(configuration, servletContextHandler);
 
         assertNotNull(container);

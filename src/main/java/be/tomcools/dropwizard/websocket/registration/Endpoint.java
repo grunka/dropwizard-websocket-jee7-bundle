@@ -1,13 +1,9 @@
 package be.tomcools.dropwizard.websocket.registration;
 
 import be.tomcools.dropwizard.websocket.registration.endpointtypes.EndpointType;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
 
-@EqualsAndHashCode
-@Getter
-@ToString
+import java.util.Objects;
+
 public abstract class Endpoint {
     protected Class<?> endpointClass;
     protected EndpointType type;
@@ -41,5 +37,33 @@ public abstract class Endpoint {
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Endpoint endpoint = (Endpoint) o;
+        return Objects.equals(endpointClass, endpoint.endpointClass) &&
+                type == endpoint.type &&
+                Objects.equals(path, endpoint.path);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(endpointClass, type, path);
+    }
+
+    @Override
+    public String toString() {
+        return "Endpoint{" +
+                "endpointClass=" + endpointClass +
+                ", type=" + type +
+                ", path='" + path + '\'' +
+                '}';
     }
 }
